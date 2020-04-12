@@ -32,7 +32,7 @@ function curve = makeFwdCurve(domCurve, forCurve, spot, tau)
         
         curve.ts = [[0]; forCurve.ts];
         
-        curve.fwdir = (curve.fwd(2:end) ./ curve.fwd(1:end-1) - 1) ./ diff(curve.ts);
+        curve.fwdir = log(curve.fwd(2:end) ./ curve.fwd(1:end-1)) ./ diff(curve.ts);
         curve.fwdir = [[0]; curve.fwdir];
         
         curve.delta_ir_end = domCurve.ir(end) - forCurve.ir(end);
