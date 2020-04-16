@@ -1,6 +1,6 @@
 function pdf = getPdf(volSurf, T, Ks)
 %% Check inputs.
-if ~all(isfield(volSurface,{'spots','fwdCurve','Ts','slopes','smiles'}))
+if ~all(isfield(volSurf,{'spots','fwdCurve','Ts','slopes','smiles'}))
     error('Error. volSurface input error: the struct is not complete.')
 end
 if length(T)>1
@@ -19,28 +19,14 @@ end
 % We begin by converting the (K, sigma) pairs into (K, C) (respectively,
 % (K, P)) space.
 % Define sample strike prices for the interpolation of pdf.
-extrapThresh = 0.01;
-fineK = linspace(min(Ks)-extrapThresh, max(Ks)+extrapThresh, 500)';
 [Vs, fwd] = getVol(volSurf, T, fineK);
-f = getFwdSpot(volSurface.fwdCurve, T);
-Cs = getBlackCall(f, T, fineK, Vs);
+Cs = getBlackCall(fwd, T, Ks, Vs);
 %% Estimate the implied densities by approximating derivatives.
 % Approximate the first derivative, at each distinct expiry time.
 % We use the discrete approximation to the first derivative.
-dK = diff(fineK);
+dK = diff(Ks);
 d1 = diff(Cs) ./ dK;
 % Approximate the second derivatives.
 d2K = dK(2:end);
-d2 = diff(d1) ./ d2K;
-% Interpolation of pdf
-pdf = fit(fineK(3:end), d2, 'poly2');
-%% Tests
-% Check whether the area under the curve is 1.
-x = linspace(min(Ks)-5, max(Ks)+5, 5000)';
-y = pdf(x);
-A = trapz(x, y);
-tol = 0.0000001;
-if abs(A-1) > tol
-    error('The area under the pdf is not equal to 1.')
-end
+pdf = diff(d1) ./ d2K;
 end
