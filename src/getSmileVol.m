@@ -1,3 +1,4 @@
+
 % X=[0.1 1.1  1.6  2.4  2.5  4.1  5.2  6.1  6.6  7.1  8.2  9.1];
 % Y=[1.9 7.9 24.9 24.9 34.9 42.7 29.7 49.8 36.1 23.7 13.0 20.5];
 
@@ -38,7 +39,11 @@ function vols = getSmileVol(curve, Ks)
         end
         
         if t == length(curve.K) + 1
-            vols(n) = curve.d(t-1) + curve.AR * tanh(curve.BR * (Ks(n) - curve.K(t-1)));
+            vols(n) = curve.d(t-2) + ...
+                curve.c(t-2) * (curve.K(t-2) - curve.K(t-3)) + ...
+                curve.b(t-2) * (curve.K(t-2) - curve.K(t-3))^2 + ...
+                curve.a(t-2) * (curve.K(t-2) - curve.K(t-3))^3;
+            %vols(n) = curve.d(t-1) + curve.AR * tanh(curve.BR * (Ks(n) - curve.K(t-1)));
         end
         
     end
