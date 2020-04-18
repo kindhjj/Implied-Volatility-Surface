@@ -32,13 +32,15 @@ function volSurface = makeVolSurface(fwdCurve , Ts , cps , deltas , vols)
         error('Error. vol smaller than 0.')
     end
     
-    volSurface.spots=getFwdSpot(fwdCurve,Ts);
+    temp=sortrows([Ts vols],1);
+    volSurface.Ts=temp(:,1);
+    temp_vol=temp(:,2:end);
+    volSurface.spots=arrayfun(@(T) getFwdSpot(fwdCurve,T),Ts);
     volSurface.fwdCurve=fwdCurve;
-    volSurface.Ts=unique(Ts);
     volSurface.slopes=1./diff(volSurface.Ts);
     %volSurface.smiles=zeros([length(volSurface.Ts) 1]);
     for t = (1:length(volSurface.Ts))
-        volSurface.smiles(t) = makeSmile(fwdCurve, volSurface.Ts(t), cps, deltas, vols(t,:));
+        volSurface.smiles(t) = makeSmile(fwdCurve, volSurface.Ts(t), cps, deltas, temp_vol(t,:));
     end
     
 % check arbitrage
