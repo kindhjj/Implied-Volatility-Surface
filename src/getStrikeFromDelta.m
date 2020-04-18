@@ -17,7 +17,7 @@ function K = getStrikeFromDelta (fwd , T, cp , sigma , delta)
 %          K = fsolve(f,fwd*0.5);
 %         K = zeroin(f,fwd*0.01,fwd*100);   
     catch
-        disp('Fail to calculate strike price.Please Check')
+        disp('Fail to calculate strike price.Please Check');
     end
 end
 
@@ -29,7 +29,7 @@ function delta = OptionDelta(fwd,T,K,sigma,cp)
     else
         delta = normcdf(-d1);
     end
-    display(delta);
+%     display(delta);
 end
 
 function x1 = secant( f, x0, x1, xAcc, nIter )
