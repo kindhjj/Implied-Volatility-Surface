@@ -1,6 +1,6 @@
-function [curve] = makeSmile(fwd, T, cps, deltas, vols)
+function [curve] = makeSmile(fwdCurve, T, cps, deltas, vols)
 % Inputs:
-%   fwd: forward spot for time T, i.e. E[S(T)]
+%   fwdCurve: forward curve data
 %   vols: Implied Vol [1 * n]
 
 % Outputs:
@@ -9,15 +9,14 @@ function [curve] = makeSmile(fwd, T, cps, deltas, vols)
 %       coefs in interpolation
 %   curve.AL, curve.BL, curve.AR, curve.BR:
 %       coefs in extrapolation
-
-    K = getStrikeFromDelta(fwd, T, cps, vols, deltas);
-    C = getBlackCall(fwd, T, K, vols);
     
-    N = length(K);
+    fwd = getFwdSpot(fwdCurve, T);
+    
+    N = length(deltas);
     N2 = length(vols);
 
     if(N ~= N2)
-        errordlg('Size of K and Vols must be the same');
+        errordlg('Size of deltas and Vols must be the same');
         return;
     end
     
@@ -26,7 +25,17 @@ function [curve] = makeSmile(fwd, T, cps, deltas, vols)
         return;
     end
     
+    K = zeros(1,N);
+    C = zeros(1,N);
+    
+    for n = 1:N
+       K(n) = getStrikeFromDelta(fwd, T, cps(n), vols(n), deltas(n));
+       C(n) = getBlackCall(fwd, T, K(n), vols(n));       
+    end    
+
+    
     % K1 = [0, K];    % Add a dummy strike
+    % C1 = [fwd, C];  % Add a dummy option price
     
     % Still need to deploy arbitrage3 check and dummy C£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡
     
@@ -38,9 +47,13 @@ function [curve] = makeSmile(fwd, T, cps, deltas, vols)
     
     arbitrage2 = diff(arbitrage1);
     if ~(all(arbitrage2(:) > 0))    
-        errordlg('Error, arbitrage in constraints 2');
-        return;
+       errordlg('Error, arbitrage in constraints 2');
+       return;
     end
+    
+        
+      
+    
     
     curve.K = K;
     
