@@ -28,7 +28,7 @@ function [vols, fwd] = getVol(volSurface, T, Ks)
     vols=zeros([length(Ks) 1]);
     if T<=volSurface.Ts
         K1=volSurface.spots(1)*Kf_ratio;
-        vols=arrayfun(@(K) getSmileVol(volSurface.smiles(1),K),K1).^2*T;
+        vols=arrayfun(@(K) getSmileVol(volSurface.smiles(1),K),K1);
     else
         for i=1:length(Ks)
             if (volSurface.Ts(end)<T)
@@ -36,7 +36,8 @@ function [vols, fwd] = getVol(volSurface, T, Ks)
             end
             Kis=Kf_ratio(i).*volSurface.spots;
             j=discretize(T,[-inf;volSurface.Ts+2*eps();inf]);
-            vols(i)=(volSurface.Ts(j)-T)*volSurface.slopes(j-1)*getSmileVol(volSurface.smiles(j-1),Kis(j-1)).^2*volSurface.Ts(j-1)+(T-volSurface.Ts(j-1))*volSurface.slopes(j-1)*getSmileVol(volSurface.smiles(j),Kis(j)).^2*volSurface.Ts(j);
+            cumulateVol=(volSurface.Ts(j)-T)*volSurface.slopes(j-1)*getSmileVol(volSurface.smiles(j-1),Kis(j-1)).^2*volSurface.Ts(j-1)+(T-volSurface.Ts(j-1))*volSurface.slopes(j-1)*getSmileVol(volSurface.smiles(j),Kis(j)).^2*volSurface.Ts(j);
+            vols(i)=sqrt(cumulateVol./T);
         end
     end
         

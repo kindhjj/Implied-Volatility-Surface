@@ -33,9 +33,6 @@ function project()
     % get pdf
     pdf = getPdf(volSurface, 0.8, [fwd, fwd])
 
-    % get cdf cutoff points
-    cutoffs = getCdfCutoffs(volSurface, 0.8, [1e-2, 1e-7])
-
     % european
     u = getEuropean(volSurface, 0.8, @(x)max(x-fwd,0))
     
