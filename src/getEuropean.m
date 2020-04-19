@@ -18,7 +18,7 @@ if T<0||T>volSurface.Ts(end)
     error('Error. Invalid T value.')
 end
 % Use Trapzoid rule to solve the integral.
-h = 0.0005;
+h = 0.0001;
 if (nargin < 4) || isequal(ints, [0,+Inf])
     x = 0.0005 : h : 10;
     y = getPdf(volSurface, T, x) .* payoff(x);
