@@ -24,7 +24,11 @@ function [vols, fwd] = getVol(volSurface, T, Ks)
     end
     
     fwd=getFwdSpot(volSurface.fwdCurve,T);
-    Kf_ratio=Ks/fwd;
+    tempKs=Ks;
+    if size(Ks,2)>1
+        tempKs=reshape(Ks,[],1);
+    end
+    Kf_ratio=tempKs/fwd;
     if T<=volSurface.Ts
         K1=volSurface.spots(1)*Kf_ratio;
         vols=arrayfun(@(K) getSmileVol(volSurface.smiles(1),K),K1);
@@ -37,6 +41,8 @@ function [vols, fwd] = getVol(volSurface, T, Ks)
         cumulateVol=(volSurface.Ts(j+1)-T)*volSurface.slopes(j)*getSmileVol(volSurface.smiles(j),Kis(:,1)).^2*volSurface.Ts(j)+(T-volSurface.Ts(j))*volSurface.slopes(j)*getSmileVol(volSurface.smiles(j+1),Kis(:,2)).^2*volSurface.Ts(j+1);
         vols=sqrt(cumulateVol./T)';
     end
-        
+    if size(Ks,2)>1
+        vols=reshape(vols,size(Ks));
+    end
 end
 
