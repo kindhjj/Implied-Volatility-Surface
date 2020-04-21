@@ -38,7 +38,7 @@ function getBlackCallInputCheck(f, T, Ks, Vs,msg)
          baseException = addCause(baseException,causeException);
          throw(baseException);
          
-     elseif sum(Ks<=0)~=0
+     elseif any(Ks<=0)~=0
          errID = 'Error:InvaildValue';
          baseException = MException(errID,msg);
          causeException = MException('Error:InvalidValue','Strike Prive should be positive!');
@@ -46,7 +46,7 @@ function getBlackCallInputCheck(f, T, Ks, Vs,msg)
          baseException = addCause(baseException,causeException);
          throw(baseException);
          
-     elseif sum(Vs<=0)~=0
+     elseif any(Vs<=0)~=0
          errID = 'Error:InvaildValue';
          baseException = MException(errID,msg);
          causeException = MException('Error:InvalidValue','Implied Black volatilities should be positive!');

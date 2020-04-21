@@ -16,7 +16,7 @@ end
 function makeDepoCurveCheck(ts , dfs)
     if length(ts) ~= length(dfs)
         error('Error. dimension not match.')
-    elseif (sum(ts <= 0) > 0) || (sum(dfs <= 0) > 0)
+    elseif any(ts <= 0) || any(dfs <= 0)
         error('Error. input should be positive.')
     elseif (length(ts) * length(dfs)) == 0
         error('Error. empty input.')
