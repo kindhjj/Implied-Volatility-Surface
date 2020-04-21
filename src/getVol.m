@@ -25,23 +25,18 @@ function [vols, fwd] = getVol(volSurface, T, Ks)
     
     fwd=getFwdSpot(volSurface.fwdCurve,T);
     Kf_ratio=Ks/fwd;
-    vols=zeros([length(Ks) 1]);
     if T<=volSurface.Ts
         K1=volSurface.spots(1)*Kf_ratio;
         vols=arrayfun(@(K) getSmileVol(volSurface.smiles(1),K),K1);
     else
-        for i=1:length(Ks)
-            if (volSurface.Ts(end)<T)
-                error('Error. T larger than Tn.')
-            end
-            Kis=Kf_ratio(i).*volSurface.spots;
-            j=discretize(T,[-inf;volSurface.Ts+2*eps();inf]);
-            cumulateVol=(volSurface.Ts(j)-T)*volSurface.slopes(j-1)*getSmileVol(volSurface.smiles(j-1),Kis(j-1)).^2*volSurface.Ts(j-1)+(T-volSurface.Ts(j-1))*volSurface.slopes(j-1)*getSmileVol(volSurface.smiles(j),Kis(j)).^2*volSurface.Ts(j);
-            vols(i)=sqrt(cumulateVol./T);
+        j=discretize(T,[-inf;volSurface.Ts+2*eps();inf]);
+        Kis=[Kf_ratio.*volSurface.spots(j-1) Kf_ratio.*volSurface.spots(j)];
+        if (volSurface.Ts(end)<T)
+            error('Error. T larger than Tn.')
         end
+        cumulateVol=(volSurface.Ts(j)-T)*volSurface.slopes(j-1)*getSmileVol(volSurface.smiles(j-1),Kis(:,1)).^2*volSurface.Ts(j-1)+(T-volSurface.Ts(j-1))*volSurface.slopes(j-1)*getSmileVol(volSurface.smiles(j),Kis(:,2)).^2*volSurface.Ts(j);
+        vols=sqrt(cumulateVol./T)';
     end
         
-                
-
 end
 
