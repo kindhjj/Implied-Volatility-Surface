@@ -5,13 +5,20 @@
 %   curve: a struct containing data needed by get RateIntegral
 
 function curve = makeDepoCurve(ts , dfs)
-    Lomo_Before_Check(ts, dfs, 'Unable to make depo curve.');
     
-    try
-        curve.ir = log(1 ./ dfs) ./ ts;
-        curve.ts = ts;
-        
-    catch
-        Lomo_After_Check(ts, dfs, 'Unable to make depo curve.')
+    makeDepoCurveCheck(ts , dfs);
+            
+    curve.ir = -log(dfs) ./ ts;
+    curve.ts = ts;
+
+end
+
+function makeDepoCurveCheck(ts , dfs)
+    if length(ts) ~= length(dfs)
+        error('Error. dimension not match.')
+    elseif (sum(ts <= 0) > 0) || (sum(dfs <= 0) > 0)
+        error('Error. input should be positive.')
+    elseif (length(ts) * length(dfs)) == 0
+        error('Error. empty input.')
     end
 end
