@@ -16,17 +16,19 @@ end
 % We begin by converting the (K, sigma) pairs into (K, C) space.
 h = 0.0001;
 pdf = NaN(size(Ks));
+
+fineK_matrix = [Ks-h;Ks;Ks+h];
+dK = [h; h];
+
 for k = 1:length(Ks)
-    fineK = [Ks(k)-h, Ks(k), Ks(k)+h]';
+    fineK = fineK_matrix(:,k);
     [Vs, fwd] = getVol(volSurf, T, fineK);
     Cs = getBlackCall(fwd, T, fineK, Vs);
     %% Estimate the implied densities by approximating derivatives.
     % Approximate the first derivative, at each distinct expiry time.
     % We use the discrete approximation to the first derivative.
-    dK = diff(fineK);
     d1 = diff(Cs) ./ dK;
     % Approximate the second derivatives.
-    d2K = dK(2:end);
-    pdf(k) = diff(d1) ./ d2K;
+    pdf(k) = diff(d1) ./ h;
 end
 end
