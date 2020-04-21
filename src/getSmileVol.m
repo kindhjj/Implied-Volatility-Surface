@@ -13,40 +13,27 @@ function vols = getSmileVol(curve, Ks)
 % Inputs:
 %   curve: A struct
 %   K: Strike
-%   Assume that Ks vector is disordered,
-%   if it is order, algo will be quicker.
-
 
 % Outputs:
 %   vols: Predicted Vol
     
     N = length(Ks);
-    vols = zeros(1, N);
+    K1 = curve.pp.breaks(1);
+    KN = curve.pp.breaks(end);
     
-    loc = discretize(Ks, [-Inf curve.K Inf]);
     
-    for n = 1:N
-        t = loc(n);
-        if (t > 1) && (t <= length(curve.K))
-            vols(n) = curve.d(t-1) + ...
-                curve.c(t-1) * (Ks(n) - curve.K(t-1)) + ...
-                curve.b(t-1) * (Ks(n) - curve.K(t-1))^2 + ...
-                curve.a(t-1) * (Ks(n) - curve.K(t-1))^3;        
-        end
-        
-        if t == 1
-            vols(n) = curve.d(t) + curve.AL * tanh(curve.BL * (curve.K(t) - Ks(n)));
-        end
-        
-        if t == length(curve.K) + 1
-            vols(n) = curve.d(t-2) + ...
-                curve.c(t-2) * (curve.K(t-2) - curve.K(t-3)) + ...
-                curve.b(t-2) * (curve.K(t-2) - curve.K(t-3))^2 + ...
-                curve.a(t-2) * (curve.K(t-2) - curve.K(t-3))^3;
-            %vols(n) = curve.d(t-1) + curve.AR * tanh(curve.BR * (Ks(n) - curve.K(t-1)));
-        end
-        
-    end
+    left = Ks(Ks < K1);
+    inter = Ks((Ks >= K1) & (Ks <= KN));
+    right = Ks(Ks > KN);
+    
+    vol_left = ppval(curve.pp, K1) + ...
+        curve.AL * tanh(curve.BL * (K1 - left));
+    vol_inter = ppval(curve.pp, inter);
+    vol_right = ppval(curve.pp, KN) + ...
+        curve.AR * tanh(curve.BR * (right - KN));
+    
+    vols = [vol_left;vol_inter;vol_right]';
+
 end
 
 
