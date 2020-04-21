@@ -17,7 +17,7 @@ function curve = makeFwdCurve(domCurve, forCurve, spot, tau)
     
 %     used for the calculation of fwd between T_i and T_i+1
     curve.fwdir = log(curve.fwd(2:end) ./ curve.fwd(1:end-1)) ./ diff(curve.ts);
-    curve.fwdir = [[domCurve.ir(end) - forCurve.ir(end)]; curve.fwdir];
+    curve.fwdir = [curve.fwdir; [domCurve.ir(end) - forCurve.ir(end)]];
     
 end
 
