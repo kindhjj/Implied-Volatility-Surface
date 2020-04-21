@@ -8,36 +8,40 @@
 
 function curve = makeFwdCurve(domCurve, forCurve, spot, tau)
     
-    Lomo_Before_Check(domCurve.ir, forCurve.ir, 'Unable to get forward curve.');
-    Lomo_Before_Check(domCurve.ts, forCurve.ts, 'Unable to get forward curve.');
-    Lomo_Before_Check(domCurve.ir, domCurve.ts, 'Unable to get forward curve.');
+    makeFwdCurveCheck(domCurve, forCurve, spot, tau)
     
-    if (spot <= 0) || (tau < 0)
-        errID = 'Error:BadInput';
-        baseException = MException(errID,'Unable to get forward curve.');
-        
-        if spot <= 0
-            causeException = MException('Error:BadValue','spot should be positive!');
-        else
-            causeException = MException('Error:BadValue','tau should not be negative!');
-        end
-        
-        baseException = addCause(baseException,causeException);
-        throw(baseException);
+    curve.fwd = spot.* exp((domCurve.ir - forCurve.ir) .* (forCurve.ts +tau));
+    curve.fwd = [[spot]; curve.fwd];
+    
+    curve.ts = [[0]; forCurve.ts];
+    
+%     used for the calculation of fwd between T_i and T_i+1
+    curve.fwdir = log(curve.fwd(2:end) ./ curve.fwd(1:end-1)) ./ diff(curve.ts);
+    curve.fwdir = [curve.fwdir; [domCurve.ir(end) - forCurve.ir(end)]];
+    
+end
+
+function makeFwdCurveCheck(domCurve, forCurve, spot, tau)
+    CurveCheck(domCurve);
+    CurveCheck(forCurve);
+    
+    if length(domCurve.ts) ~= length(forCurve.ts)
+        error('Error. domCurve and forCurve dimension not match.')
+    elseif spot <= 0
+        error('Error. spot should be positive.')
+    elseif tau < 0
+        error('Error. tau should not be negative')
     end
-    
-    try
-        curve.fwd = spot.* exp((domCurve.ir - forCurve.ir) .* (forCurve.ts +tau));
-        curve.fwd = [[spot]; curve.fwd];
-        
-        curve.ts = [[0]; forCurve.ts];
-        
-        curve.fwdir = log(curve.fwd(2:end) ./ curve.fwd(1:end-1)) ./ diff(curve.ts);
-        curve.fwdir = [[0]; curve.fwdir];
-        
-        curve.delta_ir_end = domCurve.ir(end) - forCurve.ir(end);
-        
-    catch
-        Lomo_After_Check(forCurve.ir, forCurve.ts, 'Unable to get forward curve.');
+end
+
+function CurveCheck(curve)
+    if ~all(isfield(curve,{'ts','ir'}))
+        error('Error. curve input error: the struct is not complete.')
+    elseif length(curve.ts) ~= length(curve.ir)
+        error('Error. curve dimension not match.')
+    elseif (length(curve.ts) * length(curve.ir)) == 0
+        error('Error. empty curve.')
+    elseif sum(curve.ts <= 0) > 0
+        error('Error. curve.ts should be positive.')
     end
 end

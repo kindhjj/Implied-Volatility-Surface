@@ -12,10 +12,10 @@ function K = getStrikeFromDelta (fwd , T, cp , sigma , delta)
 %     [K,~] = secant(f,fwd/2,fwd*1.5,1e-6,4000);
     
     try 
-      K = bisection(f, fwd*0.001, fwd*1000, 1e-6);
+%       K = bisection(f, fwd*0.001, fwd*1000, 1e-6);
 %         K = secant(f,fwd/2,fwd*1.5,1e-6,4000);
 %          K = fsolve(f,fwd*0.5);
-%         K = zeroin(f,fwd*0.01,fwd*100);   
+        K = zeroin(f,fwd*0.01,fwd*100);   
     catch
         disp('Fail to calculate strike price.Please Check');
     end
