@@ -31,7 +31,7 @@ function getRateIntegralCheck(curve, t)
         error('Error. curve dimension not match.')
     elseif (length(curve.ts) * length(curve.ir)) == 0
         error('Error. empty curve.')
-    elseif sum(curve.ts <= 0) > 0
+    elseif any(curve.ts <= 0)
         error('Error. curve.ts should be positive.')
     elseif length(t)>1
         error('Error. length of t larger than 1.')

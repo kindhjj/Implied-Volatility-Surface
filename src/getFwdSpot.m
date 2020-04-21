@@ -21,9 +21,9 @@ function getFwdSpotCheck(curve, T)
         error('Error. curve dimension not match.')
     elseif (length(curve.fwd) * length(curve.ts) * length(curve.fwdir)) == 0
         error('Error. empty curve.')
-    elseif sum(curve.ts < 0) > 0
+    elseif any(curve.ts < 0)
         error('Error. curve.ts should not be negative.')
-    elseif sum(curve.fwd < 0) > 0
+    elseif any(curve.fwd < 0)
         error('Error. curve.fwd should not be negative.')
     elseif length(T)>1
         error('Error. length of T larger than 1.')
