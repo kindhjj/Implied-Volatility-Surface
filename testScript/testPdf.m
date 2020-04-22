@@ -17,6 +17,7 @@ u4 = getBlackCall(fwd, T, fwd, Vs);
 if abs(u3 - u4) > eps
     error('A call option forward price obtained by numerical integration is %0.4f, while the price obtained with Black formula is %0.4f.', u3, u4)
 end
+disp('Pass')
 end
 
 
