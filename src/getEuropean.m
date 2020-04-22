@@ -17,10 +17,10 @@ end
 if T<0||T>volSurface.Ts(end)
     error('Error. Invalid T value.')
 end
-if isa(payoff,'function_handle')
+if ~isa(payoff,'function_handle')
     error('Error. Invalid payoff function.')
 end
-if ~isempty(ints)
+if (nargin > 3) && ~isempty(ints)
     if length(ints) < 2
         error('Error. The number of elements in integration interval is smaller than 2.')
     end
