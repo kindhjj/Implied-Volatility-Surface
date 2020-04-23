@@ -10,7 +10,7 @@ function curve = makeFwdCurve(domCurve, forCurve, spot, tau)
     
     makeFwdCurveCheck(domCurve, forCurve, spot, tau)
     
-    curve.fwd = spot.* exp((domCurve.ir - forCurve.ir) .* (forCurve.ts +tau));
+    curve.fwd = spot.* exp((domCurve.ir - forCurve.ir) .* forCurve.ts);
     curve.fwd = [[spot]; curve.fwd];
     
     curve.ts = [[0]; forCurve.ts];
