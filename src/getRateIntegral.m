@@ -9,12 +9,8 @@ function integ = getRateIntegral(curve, t)
     
     if (curve.ts(1) < t) && (t < curve.ts(end))
         last_ts_index = find(curve.ts <= t, 1, 'last');
-        integ = curve.ir(last_ts_index) * curve.ts(last_ts_index);
         
-        forward_rate = (curve.ir(last_ts_index+1) * curve.ts(last_ts_index+1)...
-            - integ) / (curve.ts(last_ts_index+1)-curve.ts(last_ts_index));
-        
-        integ = integ + forward_rate * (t-curve.ts(last_ts_index));
+        integ = curve.integ(last_ts_index) + curve.fwdir(last_ts_index) * (t-curve.ts(last_ts_index));
         
     elseif t <= curve.ts(1)
         integ = curve.ir(1) * t;
@@ -25,7 +21,7 @@ function integ = getRateIntegral(curve, t)
 end
 
 function getRateIntegralCheck(curve, t)
-    if ~all(isfield(curve,{'ts','ir'}))
+    if ~all(isfield(curve,{'ts','ir', 'integ', 'fwdir'}))
         error('Error. curve input error: the struct is not complete.')
     elseif length(curve.ts) ~= length(curve.ir)
         error('Error. curve dimension not match.')
