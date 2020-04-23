@@ -1,6 +1,10 @@
 function [curve] = makeSmile(fwdCurve, T, cps, deltas, vols)
+% Author = 'Luo Jiarong'
 % Inputs:
 %   fwdCurve: forward curve data
+%	T: time to expiry of the option
+%	cps: vetor if 1 for call, -1 for put
+%	deltas: vector of delta in absolute value
 %   vols: Implied Vol [1 * n]
 
 % Outputs:
@@ -14,16 +18,23 @@ function [curve] = makeSmile(fwdCurve, T, cps, deltas, vols)
     N = length(deltas);
     N2 = length(vols);
 
-    if(N ~= N2)
-        errordlg('Size of deltas and Vols must be the same');
-        return;
+    % check inputs
+    if (N ~= N2)
+        errordlg('Error. Size of deltas and Vols must be the same');
     end
     
-    if(N < 4)
-        errordlg('Number of Nodes must not be less than 4');
-        return;
+    if N < 4
+        errordlg('Error. Number of Nodes must not be less than 4');
     end
     
+    if T <= 0
+        errordlg('Error. Time to expiry of the option <= 0');
+    end
+    
+    if any(vols <0)
+        errordlg('Error. Vol < 0.');
+    end
+     
     K = zeros(1,N);
     C = zeros(1,N);
     
@@ -35,19 +46,22 @@ function [curve] = makeSmile(fwdCurve, T, cps, deltas, vols)
     K1 = [0, K];    % Add a dummy strike
     C1 = [fwd, C];  % Add a dummy option price
     
+    % check arbitrages
+    if any(C <= 0)
+        errordlg('Error. Call price <= 0.');
+    end
+    
     arbitrage1 = diff(C1)./diff(K1);  
     if ~(all((arbitrage1(:) > -1) & (arbitrage1(:) < 0)))    
         errordlg('Error, arbitrage in constraints 1');
-        return;
     end
     
-    % arbitrages test in equation 9
     arbitrage2 = diff(arbitrage1);
     if ~(all(arbitrage2(:) > 0))    
        errordlg('Error, arbitrage in constraints 2');
-       return;
     end
     
+    %Calculation of Spline Coefficients
     curve.pp = csape(K, vols, 'variational');
     
     %Calculation of Extrapolation Coefficients
@@ -63,5 +77,4 @@ function [curve] = makeSmile(fwdCurve, T, cps, deltas, vols)
 
     curve.AR = sigma_N / curve.BR;
     curve.AL = -sigma_1 / curve.BL;
-   
 end
