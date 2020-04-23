@@ -30,12 +30,11 @@ if (nargin > 3) && ~isempty(ints)
 end
 
 % main body
+f = @(x) (getPdf(volSurface, T, x) .* payoff(x));
 if (nargin < 4) || isequal(ints, [0,+Inf])
-     f = @(x) (getPdf(volSurface, T, x) .* payoff(x));
-     u = integral(@(x) f(x), 0.005, Inf);
+     u = integral(@(x) f(x), 0, Inf);
 else
-     f = @(x)(getPdf(volSurface, T, x) .* payoff(x));
-     u1 = integral(@(x) f(x), max(ints(1), 0.005), ints(2));
+     u1 = integral(@(x) f(x), max(ints(1), 0), ints(2));
      u2 = integral(@(x) f(x), ints(2), Inf);
      u = u1 + u2;
 end
