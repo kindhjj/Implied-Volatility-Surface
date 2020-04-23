@@ -7,14 +7,10 @@
 % Output :
 % K: strike of the option
 function K = getStrikeFromDelta (fwd , T, cp , sigma , delta)
-    getStrikeFromDeltaInputCheck(fwd , T, cp , sigma , delta,'Invalid Input');
+    getStrikeFromDeltaInputCheck(fwd , T, cp , sigma , delta);
     f = @(K) (OptionDelta(fwd,T,K,sigma,cp)-delta);
-%     [K,~] = secant(f,fwd/2,fwd*1.5,1e-6,4000);
-    
     try 
-%       K = bisection(f, fwd*0.001, fwd*1000, 1e-6);
-%         K = secant(f,fwd/2,fwd*1.5,1e-6,4000);
-%          K = fsolve(f,fwd*0.5);
+
         K = zeroin(f,fwd*0.01,fwd*100);   
     catch
         disp('Fail to calculate strike price.Please Check');
@@ -32,48 +28,6 @@ function delta = OptionDelta(fwd,T,K,sigma,cp)
 %     display(delta);
 end
 
-function x1 = secant( f, x0, x1, xAcc, nIter )
-    
-	fx0 = f( x0 );
-
-	found = 0; 
-
-	for i = 1:nIter  % the limit on nIter is a guard for infinite loops
-		 x1Old = x1;
-		 fx1   = f( x1 );
-		 x1 = x1 - fx1 * ( x1  - x0 ) / ( fx1 - fx0 ); % update x1
-		
-		 if ( abs( x1 - x1Old ) < xAcc ) % exit criteria
-			found = 1;
-			break;
-		 end
-
-		 x0  = x1Old;  % update x0
-		 fx0 = fx1;    % update fx0
-	end
-
-	if( ~found ), error( 'Maximum number of iterations exceeded ' ); end
-end
-
-function c = bisection( f, a, b, eps )
-	fa = f(a);
-	fb = f(b);
-	if (fa*fb >= 0 ), error( 'f(a)f(b)>=0' ); end
-	while (b-a > eps)
-		c  = (a+b)/2;
-		fc = f(c);
-		
-		if (fc*fa<0)
-		   b = c;
-		   fb = fc;
-		elseif fc == 0
-		   return
-		else
-		   a = c;
-		   fa = fc;
-        end
-    end
-end
 
 function b = zeroin(f,a,b)
     fa = f(a);
