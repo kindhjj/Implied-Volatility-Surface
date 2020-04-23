@@ -30,10 +30,11 @@ for nt=1:Nt-1
     X(nt*M+1:(nt+1)*M)=linspace(Ts(nt),Ts(nt+1),M);
 end
 
-Y(1:M)=linspace(0.001,0.5,M);
+Y(1:M)=linspace(0.1,0.5,M);
 for nv=1:Nv-1
     Y(nv*M+1:(nv+1)*M)=linspace(0.5*nv,0.5*(nv+1),M);
 end
+Y(Nv*M+1:(Nv+1)*M)=linspace(0.5*Nv,0.5*(Nv+1),M);
 
 [xx,yy]=meshgrid(X,Y);
 Z=zeros(size(xx));
@@ -42,4 +43,6 @@ for c=1:size(xx,2)
 end
 
 mesh(xx,yy,Z);
-
+xlabel('Time');
+ylabel('Strike');
+zlabel('Volatilities');

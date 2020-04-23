@@ -38,7 +38,7 @@ function volSurface = makeVolSurface(fwdCurve , Ts , cps , deltas , vols)
     volSurface.spots=arrayfun(@(T) getFwdSpot(fwdCurve,T),Ts);
     volSurface.fwdCurve=fwdCurve;
     volSurface.slopes=1./diff(volSurface.Ts);
-    %volSurface.smiles=zeros([length(volSurface.Ts) 1]);
+% store all smile curve at Ts in the struct
     for t = (1:length(volSurface.Ts))
         volSurface.smiles(t) = makeSmile(fwdCurve, volSurface.Ts(t), cps, deltas, temp_vol(t,:));
     end

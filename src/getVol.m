@@ -23,16 +23,19 @@ function [vols, fwd] = getVol(volSurface, T, Ks)
         error('Error. K smaller than zero.')
     end
     
+% calculate foward price
     fwd=getFwdSpot(volSurface.fwdCurve,T);
     tempKs=Ks;
     if size(Ks,2)>1
         tempKs=reshape(Ks,[],1);
     end
     Kf_ratio=tempKs/fwd;
+% case when T<T1
     if T<=volSurface.Ts
         K1=volSurface.spots(1)*Kf_ratio;
         vols=arrayfun(@(K) getSmileVol(volSurface.smiles(1),K),K1);
     else
+% case when T1<T<TN
         j=sum(T>volSurface.Ts);
         Kis=[Kf_ratio.*volSurface.spots(j) Kf_ratio.*volSurface.spots(j+1)];
         if (volSurface.Ts(end)<T)
