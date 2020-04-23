@@ -46,6 +46,8 @@ function testGetFwdSpot()
         end
         
         plot(ts, FwdSpotList);
+        xlabel('ts');
+        ylabel('Forward Spot Price');
     end
     
     [spot, lag, days, domdfs, fordfs, vols, cps, deltas] = getMarket();

@@ -57,7 +57,13 @@ function testGetRateIntegral()
                 Integral(end+1) = getRateIntegral(domCurve, T);
             end
         end
+        hold on;
+        
         plot(ts, Integral);
+        scatter(domCurve.ts, domCurve.integ);
+        xlabel('ts');
+        ylabel('rateIntegral');
+        hold off;
     end
     
     [spot, lag, days, domdfs, fordfs, vols, cps, deltas] = getMarket();
