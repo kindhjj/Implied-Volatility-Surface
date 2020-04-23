@@ -9,9 +9,8 @@ function vols = getSmileVol(curve, Ks)
     
     Ks = reshape(Ks, [], 1);
     % check inputs
-    if any(Ks <0)
-        errordlg('Error. K < 0.');
-    end
+    InputChecking.checkKs(Ks);
+    InputChecking.checkVolSmile(curve);
 
     K1 = curve.pp.breaks(1);
     KN = curve.pp.breaks(end);

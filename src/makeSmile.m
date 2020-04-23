@@ -19,21 +19,10 @@ function [curve] = makeSmile(fwdCurve, T, cps, deltas, vols)
     N2 = length(vols);
 
     % check inputs
-    if (N ~= N2)
-        errordlg('Error. Size of deltas and Vols must be the same');
-    end
-    
-    if N < 4
-        errordlg('Error. Number of Nodes must not be less than 4');
-    end
-    
-    if T <= 0
-        errordlg('Error. Time to expiry of the option <= 0');
-    end
-    
-    if any(vols <0)
-        errordlg('Error. Vol < 0.');
-    end
+    InputChecking.checkDeltasVolsdim(deltas, vols);
+    InputChecking.checkNodes(N);
+    InputChecking.checkT(T);
+    InputChecking.checkVolsVec(vols);
      
     K = zeros(1,N);
     C = zeros(1,N);
@@ -48,17 +37,17 @@ function [curve] = makeSmile(fwdCurve, T, cps, deltas, vols)
     
     % check arbitrages
     if any(C <= 0)
-        errordlg('Error. Call price <= 0.');
+        error('Error. Call price <= 0.');
     end
     
     arbitrage1 = diff(C1)./diff(K1);  
     if ~(all((arbitrage1(:) > -1) & (arbitrage1(:) < 0)))    
-        errordlg('Error, arbitrage in constraints 1');
+        error('Error, arbitrage in constraints 1');
     end
     
     arbitrage2 = diff(arbitrage1);
     if ~(all(arbitrage2(:) > 0))    
-       errordlg('Error, arbitrage in constraints 2');
+       error('Error, arbitrage in constraints 2');
     end
     
     %Calculation of Spline Coefficients

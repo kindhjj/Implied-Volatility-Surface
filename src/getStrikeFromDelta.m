@@ -7,7 +7,14 @@
 % Output :
 % K: strike of the option
 function K = getStrikeFromDelta (fwd , T, cp , sigma , delta)
-    getStrikeFromDeltaInputCheck(fwd , T, cp , sigma , delta);
+
+% check inputs
+    InputChecking.checkfwd(fwd);
+    InputChecking.checkT(T);
+    InputChecking.checkcp(cp);
+    InputChecking.checkvol(sigma);
+    InputChecking.checkdelta(delta);
+    
     f = @(K) (OptionDelta(fwd,T,K,sigma,cp)-delta);
     try 
 
@@ -25,7 +32,7 @@ function delta = OptionDelta(fwd,T,K,sigma,cp)
     else
         delta = normcdf(-d1);
     end
-%     display(delta);
+
 end
 
 

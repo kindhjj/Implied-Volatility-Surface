@@ -21,7 +21,11 @@ function testMakeSmile()
 %     smile = makeSmile(fwdCurve, Ts(end), cps(1:3), deltas(1:3), vols(end,1:3));  % input length must be longer than 4 to interpolation, error
     
     % 2nd check in arbitrage constraints
-    smile = makeSmile(fwdCurve, Ts(end), cps, deltas, [0.7 0.5 0.5 0.5 0.1]);
-
+    try
+        disp('Test arbitrage constraints.');
+        makeSmile(fwdCurve, Ts(end), cps, deltas, [0.7 0.5 0.5 0.5 0.1]);
+    catch e
+        fprintf('%s\n\n',e.message);
+    end
 
 end

@@ -38,5 +38,10 @@ function testGetSmileVol()
         6 * smile.pp.coefs(end, 1) * (KN - KN_1)
 
     % 1st check
-    vol = getSmileVol(smile, -1)    % K < 0, error
+    try
+        disp('Test invalid vol.');
+        getSmileVol(smile, -1);    % K < 0, error
+    catch e
+        fprintf('%s\n\n',e.message);
+    end
 end

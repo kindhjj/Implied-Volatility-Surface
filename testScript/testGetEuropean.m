@@ -8,7 +8,7 @@ function testGetEuropean()
         
         testCase('Test negative T.', @getEuropean, volSurface, -0.25, @(x)max(x-fwd,0));
         
-        testCase('Test invalid payoff function.', @getEuropean, volSurface, -0.25, max(x-fwd,0));
+        testCase('Test invalid payoff function.', @getEuropean, volSurface, -0.25, 1);
         
         testCase('Test invalid integration interval', @getEuropean, volSurface, -0.25, @(x)max(x-fwd,0), 3);
         
@@ -18,7 +18,7 @@ function testGetEuropean()
     function testPriceEquality()    
         u1 = getEuropean(volSurface, 0.8, @(x)max(x-fwd,0));
         [vol, ~] = getVol(volSurface, 0.8, fwd);
-        u2 = getBlackCall(fwd, T, fwd, vol);
+        u2 = getBlackCall(fwd, 0.8, fwd, vol);
         if abs(u1 - u2) > 0.00001
             error('A call option forward price obtained by numerical integration is %0.4f, while the price obtained with Black formula is %0.4f.', u1, u2)
         end

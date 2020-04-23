@@ -8,25 +8,12 @@
 % u : forward price of the option ( undiscounted price )
 function u = getEuropean ( volSurface, T, payoff, ints )
 % Check inputs.
-if ~all(isfield(volSurface,{'spots','fwdCurve','Ts','slopes','smiles'}))
-    error('Error. volSurface input error: the struct is not complete.')
-end
-if length(T)>1
-    error('Error. Length of T larger than 1.')
-end
-if T<0||T>volSurface.Ts(end)
-    error('Error. Invalid T value.')
-end
-if ~isa(payoff,'function_handle')
-    error('Error. Invalid payoff function.')
-end
+InputChecking.checkvolsurface(volSurface);
+InputChecking.checkT(T);
+InputChecking.checkTvolsurface(T, volSurface);
+InputChecking.checkFun(payoff);
 if (nargin > 3) && ~isempty(ints)
-    if length(ints) < 2
-        error('Error. The number of elements in integration interval is smaller than 2.')
-    end
-    if ~all(ints >= 0)
-        error('Error. Invalid integration interval.')
-    end
+    InputChecking.checkInts(ints);
 end
 
 % main body
