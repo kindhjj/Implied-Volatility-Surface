@@ -10,13 +10,6 @@ fwd=getFwdSpot(volSurface.fwdCurve,T);
 if abs(u2 - fwd) > eps
     error('The mean of the pdf function is %0.4f, while the forward is %0.4f.', u2, fwd)
 end
-%% Test if a call option forward price obtained with Black formula or by numerical integration can match.
-u3 = getEuropean(volSurface, T, @(x)max(x-fwd,0));
-[Vs, ~] = getVol(volSurface, T, fwd);
-u4 = getBlackCall(fwd, T, fwd, Vs);
-if abs(u3 - u4) > eps
-    error('A call option forward price obtained by numerical integration is %0.4f, while the price obtained with Black formula is %0.4f.', u3, u4)
-end
 disp('Pass')
 end
 
