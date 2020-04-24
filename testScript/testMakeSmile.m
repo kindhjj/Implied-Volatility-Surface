@@ -16,9 +16,26 @@ function testMakeSmile()
     fwdCurve = makeFwdCurve(domCurve, forCurve, spot, tau);
     
     % 1st check in invalid input
-%     smile = makeSmile(fwdCurve, Ts(end), cps, [deltas 1], vols(end,:));        % vector dimension do not match, error
-%     smile = makeSmile(fwdCurve, Ts(end), cps, deltas, [-1 0.5 0.5 0.5 0.5]);   % IV negative, error
-%     smile = makeSmile(fwdCurve, Ts(end), cps(1:3), deltas(1:3), vols(end,1:3));  % input length must be longer than 4 to interpolation, error
+    try
+        disp('Test invalid input.');
+        makeSmile(fwdCurve, Ts(end), cps, [deltas 1], vols(end,:));
+    catch e
+        fprintf('%s\n\n',e.message);
+    end
+
+    try
+        disp('Test invalid input.');
+        makeSmile(fwdCurve, Ts(end), cps, deltas, [-1 0.5 0.5 0.5 0.5]);
+    catch e
+        fprintf('%s\n\n',e.message);
+    end
+    
+    try
+        disp('Test invalid input.');
+        makeSmile(fwdCurve, Ts(end), cps(1:3), deltas(1:3), vols(end,1:3));
+    catch e
+        fprintf('%s\n\n',e.message);
+    end
     
     % 2nd check in arbitrage constraints
     try
