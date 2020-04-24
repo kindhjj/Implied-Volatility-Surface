@@ -42,17 +42,15 @@ classdef InputChecking
         end
         
         function checkMoneyCurve(curve)
-            if ~all(isfield(curve, {'fwd', 'ts', 'fwdir'}))
-                error('Error. curve input error: the struct is not complete.');
-            elseif (length(curve.fwd) ~= length(curve.ts)) || (length(curve.fwdir) ~= length(curve.ts))
-                error('Error. curve dimension not match.');
-            elseif (length(curve.fwd) * length(curve.ts) * length(curve.fwdir)) == 0
-                error('Error. empty curve.')
-            elseif any(curve.ts < 0)
-                error('Error. curve.ts should not be negative.');
-            elseif any(curve.fwd < 0)
-                error('Error. curve.fwd should not be negative.');
+            if ~all(isfield(curve,{'domCurve', 'forCurve', 'X0', 'tau'}))
+                error('Error. curve input error: the struct is not complete.') 
+            elseif curve.X0 < 0
+                error('Error. curve.X0 should not be negative.')
+            elseif curve.tau < 0
+                error('Error. curve.tau should not be negative.')
             end
+            InputChecking.checkIntCurve(curve.domCurve);
+            InputChecking.checkIntCurve(curve.forCurve);
         end
         
         function checkcp(cp)

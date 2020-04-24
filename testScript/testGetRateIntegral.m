@@ -20,8 +20,8 @@ function testGetRateIntegral()
         wrong_domCurve.ts(1) = 0;
         testCase('Test zero curve.ts', @getRateIntegral, wrong_domCurve , 0.8);
         
-        testCase('Test length of T', @getRateIntegral, wrong_domCurve , [0.2, 0.6]);
-        testCase('Test negative T', @getRateIntegral, wrong_domCurve , -0.5);
+        testCase('Test length of T', @getRateIntegral, domCurve , [0.2, 0.6]);
+        testCase('Test negative T', @getRateIntegral, domCurve , -0.5);
     end
 
     % test the return of original point
