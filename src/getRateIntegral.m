@@ -18,6 +18,6 @@ function integ = getRateIntegral(curve, t)
         integ = curve.ir(1) * t;
     % t >= t_n
     else
-        integ = curve.ir(end) * t;
+        integ = curve.integ(end-1) + curve.fwdir(end) * (t-curve.ts(end-1));
     end
 end
