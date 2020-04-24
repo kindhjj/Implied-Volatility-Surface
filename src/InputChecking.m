@@ -22,7 +22,7 @@ classdef InputChecking
         end
         
         function checkKs(Ks)
-            if any(Ks <= 0)
+            if any(Ks < 0)
                 error('Error: Strike Price should be positive!');
             end
         end
