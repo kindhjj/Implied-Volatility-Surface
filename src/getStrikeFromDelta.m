@@ -17,7 +17,6 @@ function K = getStrikeFromDelta (fwd , T, cp , sigma , delta)
     
     f = @(K) (OptionDelta(fwd,T,K,sigma,cp)-delta);
     try 
-
         K = zeroin(f,fwd*0.01,fwd*100);   
     catch
         disp('Fail to calculate strike price.Please Check');

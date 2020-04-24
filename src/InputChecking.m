@@ -27,6 +27,13 @@ classdef InputChecking
             end
         end
         
+        function checkBlackCallKs(Ks)
+            if any(Ks < 0)
+                error('Error: Strike Price should be non-negative!');
+            end
+        end
+        
+        
         function checkVolsVec(vols)
             if any(vols < 0)
                 error('Error: vol smaller than 0.');
@@ -64,7 +71,7 @@ classdef InputChecking
         function checkvol(vol)
             if length(vol) > 1
                 error('Error: vol length should be no larger than 1.');
-            elseif vol < 0
+            elseif vol <= 0
                 error('Error: Vol should be positive!');
             end
         end
@@ -72,7 +79,7 @@ classdef InputChecking
         function checkdelta(delta)
             if length(delta) > 1
                 error('Error: vol length should be no larger than 1.');
-            elseif delta < 0
+            elseif delta <= 0
                 error('Error: Delta should be absolute value!');
             end
         end
