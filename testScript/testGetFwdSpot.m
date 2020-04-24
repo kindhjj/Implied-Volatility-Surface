@@ -57,7 +57,7 @@ function testGetFwdSpot()
         end
         
         for i=1:length(fwdCurve.domCurve.ts)
-            scatter_list(end+1) = getFwdSpot(fwdCurve, wfdCurve.domCurve.ts(i));
+            scatter_list(end+1) = getFwdSpot(fwdCurve, fwdCurve.domCurve.ts(i));
         end
 
         hold on;
