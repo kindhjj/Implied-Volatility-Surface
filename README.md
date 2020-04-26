@@ -2,7 +2,7 @@
 
 *Coded with MATLAB*
 
-In FX markets the volatility surface is often described via a nite number of observations of
+In FX markets the volatility surface is often described via a finite number of observations of
 vanillas European options (call and puts) at different strikes and tenors expressed in delta
 conventions. The purpose of this project is
 - translate the observations into pairs of (strikes, volatilities);
